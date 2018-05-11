@@ -1,23 +1,7 @@
-from socket import *
-from _thread import *
+import socket
+import _thread
 import sys
 from time import *
-
-class AsyncSocket(object):
-    def __init__(self, sock):
-        self.sock = sock
-    def recv(self, maxsize):
-        yield 'recv', self.sock
-        return self.sock.recv(maxsize)
-    def send(self, data):
-        yield 'send', self.sock
-        return self.sock.send(data)
-    def accept(self):
-        yield 'recv', self.sock
-        client, addr = self.sock.accept()
-        return AsyncSocket(client), addr
-    def __getattr__(self, name):
-        return getattr(self.sock, name)
 
 try:
     listening_port = int(input("[*] Enter Listening Port Number: "))
@@ -25,13 +9,11 @@ except KeyboardInterrupt:
     print("\n [*] User terminated Application")
     sys.exit()
 max_conn = 5
-buff_size = 8192
+buffer_size = 8192
 
 def run():
-    sock = AsyncSocket(socket(AF_INET, SOCK_STREAM))
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(('', listening_port))
-    print ("PASSED BIND")
-    sock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
     sock.listen(max_conn)
     print ("[*] Initializing Sockets ...")
     print ("Done\n")
