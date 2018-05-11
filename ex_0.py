@@ -1,5 +1,5 @@
 import socket
-import _thread
+from  _thread import *
 import sys
 from time import *
 
@@ -59,8 +59,9 @@ def conn_string(conn, data, addr):
 def proxy_server(webserver, port, conn, data, addr):
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.connect(webserver, port)
-        s.send(data)
+        s.settimeout(config['CONNECTION_TIMEOUT'])
+        s.connect((webserver, port))
+        s.sendall(data)
         while 1:
             reply = s.recv(buffer_size)
             if (len(reply) > 0):
